@@ -8,6 +8,10 @@ export default {
 		"./app/**/*.{ts,tsx}",
 		"./src/**/*.{ts,tsx}",
 	],
+	safelist: [
+		'show', 
+		'dragging',
+	],
 	prefix: "",
 	theme: {
 		container: {
@@ -92,5 +96,6 @@ export default {
 			}
 		}
 	},
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
