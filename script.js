@@ -17,8 +17,10 @@ class BucketTossGame {
             element: null,
             startX: 0,
             startY: 0,
-            initialX: 0,
-            initialY: 0
+            currentX: 0,
+            currentY: 0,
+            originalX: 0,
+            originalY: 0
         };
         
         this.init();
@@ -50,18 +52,26 @@ class BucketTossGame {
         const touch = e.touches ? e.touches[0] : e;
         const product = e.target;
         
+        // Get the center of the product as the anchor point
+        const rect = product.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
         this.dragData.isDragging = true;
         this.dragData.element = product;
-        this.dragData.startX = touch.clientX;
-        this.dragData.startY = touch.clientY;
-        
-        const rect = product.getBoundingClientRect();
-        this.dragData.initialX = rect.left;
-        this.dragData.initialY = rect.top;
+        this.dragData.startX = centerX;
+        this.dragData.startY = centerY;
+        this.dragData.currentX = touch.clientX;
+        this.dragData.currentY = touch.clientY;
+        this.dragData.originalX = rect.left;
+        this.dragData.originalY = rect.top;
         
         product.classList.add('dragging');
         product.style.position = 'fixed';
         product.style.zIndex = '20';
+        
+        // Show initial trajectory
+        this.showTrajectory();
     }
     
     drag(e) {
@@ -69,34 +79,37 @@ class BucketTossGame {
         
         e.preventDefault();
         const touch = e.touches ? e.touches[0] : e;
-        const product = this.dragData.element;
         
-        const deltaX = touch.clientX - this.dragData.startX;
-        const deltaY = touch.clientY - this.dragData.startY;
+        this.dragData.currentX = touch.clientX;
+        this.dragData.currentY = touch.clientY;
         
-        const newX = this.dragData.initialX + deltaX;
-        const newY = this.dragData.initialY + deltaY;
-        
-        product.style.left = newX + 'px';
-        product.style.top = newY + 'px';
-        
-        // Show trajectory line
-        this.showTrajectory(touch.clientX, touch.clientY);
+        // Update trajectory line
+        this.showTrajectory();
     }
     
-    showTrajectory(currentX, currentY) {
-        const deltaX = currentX - this.dragData.startX;
-        const deltaY = currentY - this.dragData.startY;
+    showTrajectory() {
+        const deltaX = this.dragData.startX - this.dragData.currentX;
+        const deltaY = this.dragData.startY - this.dragData.currentY;
         
-        if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
-            const length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-            const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+        // Only show trajectory if dragging with some distance
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        
+        if (distance > 20) {
+            // Calculate trajectory line (from product center to opposite direction of drag)
+            const trajectoryLength = Math.min(distance * 2, 200); // Limit max length
+            const angle = Math.atan2(-deltaY, -deltaX) * 180 / Math.PI; // Opposite direction
             
             this.trajectoryLine.style.left = this.dragData.startX + 'px';
             this.trajectoryLine.style.top = this.dragData.startY + 'px';
-            this.trajectoryLine.style.width = length + 'px';
+            this.trajectoryLine.style.width = trajectoryLength + 'px';
             this.trajectoryLine.style.transform = `rotate(${angle}deg)`;
             this.trajectoryLine.classList.add('show');
+            
+            // Add power indicator by changing line thickness
+            const power = Math.min(distance / 100, 1);
+            this.trajectoryLine.style.height = (2 + power * 3) + 'px';
+        } else {
+            this.trajectoryLine.classList.remove('show');
         }
     }
     
@@ -104,20 +117,21 @@ class BucketTossGame {
         if (!this.dragData.isDragging || !this.gameActive) return;
         
         const product = this.dragData.element;
-        const touch = e.changedTouches ? e.changedTouches[0] : e;
         
-        const deltaX = touch.clientX - this.dragData.startX;
-        const deltaY = touch.clientY - this.dragData.startY;
+        // Calculate launch velocity based on drag distance and direction
+        const deltaX = this.dragData.startX - this.dragData.currentX;
+        const deltaY = this.dragData.startY - this.dragData.currentY;
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         
         // Hide trajectory line
         this.trajectoryLine.classList.remove('show');
         
-        // Calculate throw velocity
-        const velocityX = deltaX * 0.1;
-        const velocityY = deltaY * 0.1;
-        
-        // Only throw if there's significant movement
-        if (Math.abs(deltaX) > 20 || Math.abs(deltaY) > 20) {
+        // Only launch if there's significant drag distance
+        if (distance > 30) {
+            const power = Math.min(distance / 50, 3); // Scale power
+            const velocityX = deltaX * power * 0.3;
+            const velocityY = deltaY * power * 0.3;
+            
             this.throwProduct(product, velocityX, velocityY);
         } else {
             this.resetProductPosition(product);
@@ -132,16 +146,13 @@ class BucketTossGame {
         product.classList.add('thrown');
         product.style.position = 'fixed';
         
-        const startX = parseFloat(product.style.left);
-        const startY = parseFloat(product.style.top);
-        
-        let currentX = startX;
-        let currentY = startY;
+        let currentX = this.dragData.startX - 25; // Center the product
+        let currentY = this.dragData.startY - 25;
         let currentVelocityX = velocityX;
         let currentVelocityY = velocityY;
         
-        const gravity = 0.5;
-        const friction = 0.99;
+        const gravity = 0.4;
+        const friction = 0.995;
         
         const animate = () => {
             currentVelocityY += gravity;
