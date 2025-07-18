@@ -1,4 +1,3 @@
-
 class BucketTossGame {
     constructor() {
         this.gameArea = document.getElementById('gameArea');
@@ -190,8 +189,8 @@ class BucketTossGame {
         
         return (x + productSize/2 >= bucketRect.left && 
                 x + productSize/2 <= bucketRect.right &&
-                y + productSize >= bucketRect.top && 
-                y <= bucketRect.bottom);
+                y + productSize/2 >= bucketRect.top && 
+                y + productSize/2 <= bucketRect.bottom + 20); // Slightly more forgiving for top entry
     }
     
     productInBucket(product) {
@@ -244,12 +243,12 @@ class BucketTossGame {
         product.style.position = 'absolute';
         product.style.zIndex = '10';
         
-        // Reset to original position based on product type
+        // Reset to original position based on product type - now at bottom
         const positions = {
-            apple: { left: '50px', bottom: '150px' },
-            orange: { left: '120px', bottom: '180px' },
-            banana: { left: '80px', bottom: '250px' },
-            grape: { left: '150px', bottom: '120px' }
+            apple: { left: '50px', bottom: '50px' },
+            orange: { left: '120px', bottom: '80px' },
+            banana: { left: '80px', bottom: '120px' },
+            grape: { left: '150px', bottom: '50px' }
         };
         
         const type = product.dataset.type;
@@ -307,12 +306,12 @@ function restartGame() {
         product.style.zIndex = '10';
     });
     
-    // Reset positions
+    // Reset positions - now at bottom of screen
     const positions = [
-        { element: document.getElementById('product1'), left: '50px', bottom: '150px' },
-        { element: document.getElementById('product2'), left: '120px', bottom: '180px' },
-        { element: document.getElementById('product3'), left: '80px', bottom: '250px' },
-        { element: document.getElementById('product4'), left: '150px', bottom: '120px' }
+        { element: document.getElementById('product1'), left: '50px', bottom: '50px' },
+        { element: document.getElementById('product2'), left: '120px', bottom: '80px' },
+        { element: document.getElementById('product3'), left: '80px', bottom: '120px' },
+        { element: document.getElementById('product4'), left: '150px', bottom: '50px' }
     ];
     
     positions.forEach(pos => {
