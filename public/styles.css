@@ -14,12 +14,10 @@ body {
 }
 
 .game-container {
-    width: 100vh;
-    height: 100vw;
+    width: 100vw;
+    height: 100vh;
     position: relative;
     overflow: hidden;
-    transform: rotate(90deg);
-    transform-origin: center center;
 }
 
 .ui-container {
@@ -117,25 +115,25 @@ body {
 
 .product.apple {
     background: radial-gradient(circle at 30% 30%, #ff6b6b, #ee5a52);
-    left: calc(50% - 90px);
+    left: 50px;
     bottom: 50px;
 }
 
 .product.orange {
     background: radial-gradient(circle at 30% 30%, #ffa726, #ff9800);
-    left: calc(50% - 30px);
-    bottom: 50px;
+    left: 120px;
+    bottom: 80px;
 }
 
 .product.banana {
     background: radial-gradient(circle at 30% 30%, #ffeb3b, #fdd835);
-    left: calc(50% + 30px);
-    bottom: 50px;
+    left: 80px;
+    bottom: 120px;
 }
 
 .product.grape {
     background: radial-gradient(circle at 30% 30%, #9c27b0, #7b1fa2);
-    left: calc(50% + 90px);
+    left: 150px;
     bottom: 50px;
 }
 
@@ -294,10 +292,10 @@ body {
         font-size: 28px;
     }
     
-    .product.apple { left: calc(50% - 70px); bottom: 40px; }
-    .product.orange { left: calc(50% - 20px); bottom: 40px; }
-    .product.banana { left: calc(50% + 30px); bottom: 40px; }
-    .product.grape { left: calc(50% + 80px); bottom: 40px; }
+    .product.apple { left: 30px; bottom: 40px; }
+    .product.orange { left: 80px; bottom: 60px; }
+    .product.banana { left: 50px; bottom: 100px; }
+    .product.grape { left: 100px; bottom: 40px; }
     
     .score-board {
         padding: 10px 15px;
