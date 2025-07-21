@@ -245,10 +245,10 @@ class BucketTossGame {
         
         // Reset to original position based on product type - now at bottom
         const positions = {
-            apple: { left: '50px', bottom: '50px' },
-            orange: { left: '120px', bottom: '80px' },
-            banana: { left: '80px', bottom: '120px' },
-            grape: { left: '150px', bottom: '50px' }
+            apple: { left: 'calc(50% - 90px)', bottom: '50px' },
+            orange: { left: 'calc(50% - 30px)', bottom: '50px' },
+            banana: { left: 'calc(50% + 30px)', bottom: '50px' },
+            grape: { left: 'calc(50% + 90px)', bottom: '50px' }
         };
         
         const type = product.dataset.type;
@@ -308,10 +308,10 @@ function restartGame() {
     
     // Reset positions - now at bottom of screen
     const positions = [
-        { element: document.getElementById('product1'), left: '50px', bottom: '50px' },
-        { element: document.getElementById('product2'), left: '120px', bottom: '80px' },
-        { element: document.getElementById('product3'), left: '80px', bottom: '120px' },
-        { element: document.getElementById('product4'), left: '150px', bottom: '50px' }
+        { element: document.getElementById('product1'), left: 'calc(50% - 90px)', bottom: '50px' },
+        { element: document.getElementById('product2'), left: 'calc(50% - 30px)', bottom: '50px' },
+        { element: document.getElementById('product3'), left: 'calc(50% + 30px)', bottom: '50px' },
+        { element: document.getElementById('product4'), left: 'calc(50% + 90px)', bottom: '50px' }
     ];
     
     positions.forEach(pos => {
